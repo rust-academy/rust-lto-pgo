@@ -15,7 +15,6 @@ pub struct StopHandle {
     inner: Mutex<Option<ServerHandle>>,
 }
 
-
 impl StopHandle {
     /// Sets the server handle to stop.
     pub(crate) fn register(&self, handle: ServerHandle) {

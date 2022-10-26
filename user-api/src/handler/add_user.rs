@@ -4,7 +4,7 @@ use actix_web::{web, post, HttpResponse};
 use uuid::Uuid;
 use crate::model::user::{User};
 
-/// Inserts new user with name defined in form.
+// https://actix.rs/docs/extractors/
 #[post("/user/add/{user_name}")]
 pub async fn add_user(
     storage: web::Data<Mutex<HashMap<String, User>>>,
