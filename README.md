@@ -1,0 +1,2 @@
+# Rust lto pgo optimization
+
