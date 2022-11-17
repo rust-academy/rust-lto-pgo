@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use std::sync::Mutex;
+
 use actix_web::{App, HttpServer, middleware, web};
+
 use crate::config::init;
 use crate::handler::stop::{stop, StopHandle};
 use crate::model::user::User;
@@ -26,12 +28,12 @@ async fn main() -> std::io::Result<()> {
     // start server as normal but don't .await after .run() yet
     println!("HTTP server at http://localhost:8080");
     let srv = HttpServer::new(move || {
-            App::new()
-                .app_data(storage.clone())
-                .configure(init)    //  see config.rs for details on initialization
-                .service(stop)  // attach stop handler
-                .wrap(middleware::Logger::default())
-        })
+        App::new()
+            .app_data(storage.clone())
+            .configure(init)    //  see config.rs for details on initialization
+            .service(stop)  // attach stop handler
+            .wrap(middleware::Logger::default())
+    })
         .bind(ADDRESS)?.workers(NUMBER_WORKERS).run();
 
     stop_handle.clone().register(srv.handle());  // register the server handle with the stop handle

@@ -7,11 +7,8 @@ pub struct User {
 }
 
 impl User {
- pub fn new(id: String, name: String) -> User {
-     return User {
-          id,
-         name,
-     }
+    pub fn new(id: String, name: String) -> User {
+        return User { id, name };
     }
 }
 

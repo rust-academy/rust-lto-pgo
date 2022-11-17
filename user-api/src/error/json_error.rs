@@ -1,8 +1,9 @@
+use std::fmt::{Display, Formatter, Result as FmtResult};
+
 // https://github.com/actix/examples/blob/master/json/json-error/src/main.rs
 use actix_web::{http::StatusCode, HttpResponse, ResponseError};
 use serde::Serialize;
 use serde_json::{json, to_string_pretty};
-use std::fmt::{Display, Formatter, Result as FmtResult};
 
 #[derive(Debug, Serialize)]
 pub struct JsonError {

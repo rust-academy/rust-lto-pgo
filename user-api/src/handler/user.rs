@@ -1,9 +1,11 @@
 use std::collections::HashMap;
 use std::sync::Mutex;
-use actix_web::{web, get, post, delete, HttpResponse, ResponseError};
+
+use actix_web::{delete, get, HttpResponse, post, ResponseError, web};
 use uuid::Uuid;
+
 use crate::error::json_error::JsonError;
-use crate::model::user::{User};
+use crate::model::user::User;
 
 // === add_user  === //
 
@@ -20,12 +22,12 @@ pub async fn add_user(
     let res = storage
         .lock()
         .unwrap()
-        .insert(id.to_string(), User::new(id.to_string(),name));
+        .insert(id.to_string(), User::new(id.to_string(), name));
 
     // Inserts a key-value pair into the map.
     // If the map did not have this key present, None is returned.
     // If the map did have this key present, the value is updated and the old value is returned.
-    match res{
+    match res {
         Some(_) => {
             HttpResponse::Ok().json("Added") // <- send response
         }
@@ -47,7 +49,7 @@ pub async fn get_user(
     let user_id = path.into_inner();
 
     // return user if found, errors otherwise
-    match storage.lock().unwrap().get(user_id.as_str()){
+    match storage.lock().unwrap().get(user_id.as_str()) {
         Some(value) => {
             HttpResponse::Ok().json(value) // <- send response
         }
@@ -73,9 +75,9 @@ pub async fn update_user(
     let res = storage
         .lock()
         .unwrap()
-        .insert(user_id.to_string(), User::new(user_id.to_string(),user_name.to_string()));
+        .insert(user_id.to_string(), User::new(user_id.to_string(), user_name.to_string()));
 
-    match res{
+    match res {
         Some(_) => {
             HttpResponse::Ok().json("Updated") // <- send response
         }
@@ -96,7 +98,7 @@ pub async fn delete_user(
     // extract user id from path
     let user_id = path.into_inner();
 
-    match storage.lock().unwrap().remove(user_id.as_str()){
+    match storage.lock().unwrap().remove(user_id.as_str()) {
         Some(_) => {
             HttpResponse::Ok().json("Deleted") // <- send response
         }

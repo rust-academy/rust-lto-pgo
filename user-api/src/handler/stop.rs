@@ -1,8 +1,7 @@
-use actix_web::dev::ServerHandle;
 use actix_web::{HttpResponse, post, web};
+use actix_web::dev::ServerHandle;
 use actix_web_lab::extract::Path;
 use parking_lot::Mutex;
-
 
 #[post("/stop/{graceful}")]
 pub async fn stop(Path(graceful): Path<bool>, stop_handle: web::Data<StopHandle>) -> HttpResponse {
