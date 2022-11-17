@@ -3,11 +3,9 @@ use std::sync::Mutex;
 use actix_web::{App, HttpServer, middleware, web};
 use crate::config::init;
 use crate::handler::stop::{stop, StopHandle};
-use crate::model::user::User;
 
 mod config;
 mod handler;
-mod model;
 mod error;
 
 const NUMBER_WORKERS: usize = 6;
@@ -26,7 +24,7 @@ async fn main() -> std::io::Result<()> {
     });
 
     // create data store container https://doc.rust-lang.org/rust-by-example/std/hash.html
-    let storage: web::Data<Mutex<HashMap<String, User>>> =
+    let storage: web::Data<Mutex<HashMap<String, String>>> =
         web::Data::new(Mutex::new(HashMap::new()));
 
     // create the stop handle container

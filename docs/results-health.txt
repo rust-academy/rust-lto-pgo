@@ -83,7 +83,7 @@ cargo pgo instrument run
 
 300 seconds stress test
 
-marvin$ wrk -t2 -c64 -d300s  --latency  http://127.0.0.1:8080/health
+wrk -t2 -c64 -d300s  --latency  http://127.0.0.1:8080/health
 
 4) Build optimized binary
 
@@ -91,7 +91,8 @@ cargo pgo optimize
 
 5) Run optimized binary
 
-cargo pgo optimize run
+cargo pgo optimize
+
 
 6) Run stress test on optimized binary
 wrk -t2 -c64 -d60s  --latency  http://127.0.0.1:8080/health
