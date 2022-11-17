@@ -1,0 +1,112 @@
+Hardware
+
+Model Name:	MacBook Pro
+Model Identifier:	MacBookPro17,1
+Model Number:	MYD92PA/A
+Chip:	Apple M1
+Total Number of Cores:	8 (4 performance and 4 efficiency)
+Memory:	8 GB
+
+Software
+rustc 1.65.0 (897e37553 2022-11-02)
+cargo 1.65.0 (4bc8f24d3 2022-10-20)
+
+Benchmark command
+
+wrk -t2 -c64 -d60s  http://127.0.0.1:8080/health
+
+Result
+1) Debug
+2) Release -standard cargo config
+3) LTO
+4) LTO & PGO
+
+1) DEBUG
+
+ 2 threads and 64 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     2.11ms    9.94ms 250.48ms   98.25%
+    Req/Sec    37.18k     2.63k   44.93k    75.00%
+
+4441076 requests in 1.00m, 347.30MB read
+Requests/sec:  73988.91
+Transfer/sec:      5.79MB
+
+RELEASE (STANDARD CONFIGURATION)
+
+  2 threads and 64 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   655.13us    3.43ms 181.87ms   97.71%
+    Req/Sec   101.74k    15.03k  141.25k    71.33%
+  12147897 requests in 1.00m, 0.93GB read
+Requests/sec: 202441.47
+Transfer/sec:     15.83MB
+
+RELEASE (LTO CUSTOM CONFIGURATION)
+
+Added to cargo.toml.
+
+[profile.release]
+# https://github.com/johnthagen/min-sized-rust
+strip = true  # Automatically strip debug symbols from the binary
+lto = true # Enable Link Time Optimization (LTO)
+codegen-units = 1 # Reduce Parallel Code Generation Units to Increase Optimization
+panic = "abort"  # disabled stacktrace
+
+wrk -t2 -c64 -d60s  --latency  http://127.0.0.1:8080/health
+
+  2 threads and 64 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     0.96ms    3.97ms 131.66ms   97.28%
+    Req/Sec   120.44k     5.64k  133.61k    88.69%
+  Latency Distribution
+     50%  141.00us
+     75%    0.90ms
+     90%    2.61ms
+     99%    6.88ms
+  14405945 requests in 1.00m, 1.10GB read
+Requests/sec: 239693.06
+Transfer/sec:     18.74MB
+
+
+RELEASE (LTO & PGO CUSTOM CONFIGURATION)
+
+1) Build instrumented binary
+
+cargo pgo instrument build
+
+2) Run instrumented binary
+
+cargo pgo instrument run
+
+3) Stress test binary with representative workload
+
+300 seconds stress test
+
+marvin$ wrk -t2 -c64 -d300s  --latency  http://127.0.0.1:8080/health
+
+4) Build optimized binary
+
+cargo pgo optimize
+
+5) Run optimized binary
+
+cargo pgo optimize run
+
+6) Run stress test on optimized binary
+wrk -t2 -c64 -d60s  --latency  http://127.0.0.1:8080/health
+
+7) Results
+
+  2 threads and 64 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   203.87us  114.94us   4.19ms   74.71%
+    Req/Sec   122.55k     8.79k  132.79k    90.60%
+  Latency Distribution
+     50%  185.00us
+     75%  259.00us
+     90%  343.00us
+     99%  580.00us
+  14654488 requests in 1.00m, 1.12GB read
+Requests/sec: 243832.67
+Transfer/sec:     19.07MB
