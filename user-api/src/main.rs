@@ -36,7 +36,7 @@ async fn main() -> std::io::Result<()> {
     })
         .bind(ADDRESS)?.workers(NUMBER_WORKERS).run();
 
-    stop_handle.clone().register(srv.handle());  // register the server handle with the stop handle
+    stop_handle.clone().register(srv.handle());  // register the stop handler with the server
 
     srv.await // run server until stopped (either by ctrl-c or stop endpoint)
 }

@@ -11,7 +11,7 @@ pub fn init(config: &mut web::ServiceConfig) {
             .service(healthcheck)
             .service(add_user)
             .service(delete_user)
-            .service(update_user)
             .service(get_user)
+            .service(update_user)
     );
 }
