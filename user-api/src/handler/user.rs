@@ -24,15 +24,12 @@ pub async fn add_user(
         .unwrap()
         .insert(id.to_string(), User::new(id.to_string(), name));
 
-    // Inserts a key-value pair into the map.
-    // If the map did not have this key present, None is returned.
-    // If the map did have this key present, the value is updated and the old value is returned.
-    match res {
+  match res {
         Some(_) => {
-            HttpResponse::Ok().json("Added") // <- send response
+            HttpResponse::Ok().json(id.to_string()) // <- send response
         }
         None => {
-            HttpResponse::Ok().json(id.to_string()) // <- send response
+            HttpResponse::Ok().json("Error adding user") // <- send response
         }
     }
 }

@@ -1,8 +1,6 @@
 use std::collections::HashMap;
 use std::sync::Mutex;
-
 use actix_web::{App, HttpServer, middleware, web};
-
 use crate::config::init;
 use crate::handler::stop::{stop, StopHandle};
 use crate::model::user::User;
@@ -15,8 +13,17 @@ mod error;
 const NUMBER_WORKERS: usize = 6;
 const ADDRESS: &str = "0.0.0.0:8080";
 
+struct StateWithCounter {
+    counter: Mutex<u64>, // <- Mutex is necessary to mutate safely across threads
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+
+    // create shared mutex counter https://actix.rs/docs/application/#state
+    let counter = web::Data::new(StateWithCounter {
+        counter: Mutex::new(0),
+    });
 
     // create data store container https://doc.rust-lang.org/rust-by-example/std/hash.html
     let storage: web::Data<Mutex<HashMap<String, User>>> =
@@ -29,7 +36,8 @@ async fn main() -> std::io::Result<()> {
     println!("HTTP server at http://localhost:8080");
     let srv = HttpServer::new(move || {
         App::new()
-            .app_data(storage.clone())
+            .app_data(storage.clone()) // register the data store container
+            .app_data(counter.clone()) // register the created counter
             .configure(init)    //  see config.rs for details on initialization
             .service(stop)  // attach stop handler
             .wrap(middleware::Logger::default())
