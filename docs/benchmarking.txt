@@ -1,0 +1,11 @@
+
+wrk -t8 -c10 -d60s  --latency -s post.lua  http://127.0.0.1:8080/market
+
+
+# Stress testing /health
+
+wrk -t8 -c64 -d100s  --latency  http://127.0.0.1:8080/health
+
+# Stress testing /
+
+wrk -t8 -c64 -d100s  --latency  http://127.0.0.1:8080/
