@@ -1,6 +1,6 @@
 # Rust lto pgo optimization
 
-Sample code for the blog post Rust LTO and PGO optimization
+Sample code for the blog post [Rust LTO and PGO optimization](https://rust-academy.com/rust-lto-and-pgo/)
 
 ## Author
 * [Marvin Hansen](https://github.com/marvin-hansen)
